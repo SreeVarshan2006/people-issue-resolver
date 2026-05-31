@@ -12,11 +12,17 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: [
-    'https://people-issue-resolver-9hq7-cdsyvhrsp-sree-varshan-s-s-projects.vercel.app',
-    'https://people-issue-resolver-9hq7.vercel.app',
-    'http://localhost:5173'
-  ],
+  origin: function (origin, callback) {
+    if (
+      !origin ||
+      origin.endsWith('.vercel.app') ||
+      origin === 'http://localhost:5173'
+    ) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 app.use(express.json());
